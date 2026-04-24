@@ -173,7 +173,7 @@ export default function ConnectPage() {
                 <p className="mt-2 text-xs font-medium text-amber-700">
                   Also confirm the valid OAuth redirect URI is exactly:
                   {" "}
-                  <span className="font-mono">http://localhost:8000/api/v1/instagram/callback</span>
+                  <span className="font-mono">{process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1"}/instagram/callback</span>
                 </p>
               </div>
             </div>
