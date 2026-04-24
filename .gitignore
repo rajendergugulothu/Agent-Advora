@@ -1,0 +1,42 @@
+# Python / Backend
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+venv/
+env/
+.venv/
+.env
+.env.*
+!.env.example
+
+# Next.js / Frontend
+fna-saas/frontend/.next/
+fna-saas/frontend/node_modules/
+fna-saas/frontend/.env.local
+fna-saas/frontend/.env.*.local
+
+# General
+.DS_Store
+Thumbs.db
+*.log
+*.sqlite
+*.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+desktop.ini
+
+# Claude Code local settings
+.claude/
