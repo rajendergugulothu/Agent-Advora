@@ -156,6 +156,29 @@ export default function ConnectPage() {
       ) : (
         /* Disconnected state */
         <div className="space-y-5">
+          <div className="card border-amber-100 bg-amber-50/80 p-5">
+            <div className="flex items-start gap-3">
+              <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.25}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-bold text-amber-900">Meta app setup required</p>
+                <p className="mt-1 text-sm leading-5 text-amber-800">
+                  If Meta shows &quot;App not active&quot;, your Facebook app is still in development mode.
+                  Add your Facebook account as an app tester/admin in Meta Developer Dashboard, or switch
+                  the app to Live after completing the required app review.
+                </p>
+                <p className="mt-2 text-xs font-medium text-amber-700">
+                  Also confirm the valid OAuth redirect URI is exactly:
+                  {" "}
+                  <span className="font-mono">http://localhost:8000/api/v1/instagram/callback</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
           <div className="card p-8 text-center">
             {/* Instagram gradient icon */}
             <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400 mx-auto flex items-center justify-center shadow-lg mb-6">

@@ -15,49 +15,64 @@
   html {
     scroll-behavior: smooth;
   }
+
+  body {
+    background:
+      radial-gradient(circle at 15% 15%, rgba(6, 182, 212, 0.10), transparent 28rem),
+      radial-gradient(circle at 86% 10%, rgba(249, 115, 22, 0.08), transparent 24rem),
+      linear-gradient(135deg, #f8fafc 0%, #eef6ff 44%, #fff8f3 100%);
+  }
+
+  ::selection {
+    background: rgba(124, 58, 237, 0.18);
+    color: #162147;
+  }
 }
 
 @layer components {
   .btn-primary {
-    @apply rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white
-           hover:bg-brand-700 disabled:opacity-50 transition-all duration-200
+    @apply rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand-600/20
+           hover:bg-brand-700 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-brand-600/25 disabled:opacity-50 transition-all duration-200
            focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2
            active:scale-95;
   }
 
   .btn-secondary {
-    @apply rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700
-           hover:bg-gray-50 disabled:opacity-50 transition-all duration-200
+    @apply rounded-xl border border-white/70 bg-white/80 px-5 py-2.5 text-sm font-semibold text-gray-700 shadow-sm backdrop-blur
+           hover:bg-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-50 transition-all duration-200
            focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2;
   }
 
   .btn-gradient {
-    @apply rounded-xl px-5 py-2.5 text-sm font-semibold text-white
-           bg-gradient-to-r from-brand-600 to-cyan-500
-           hover:opacity-90 disabled:opacity-50 transition-all duration-200
+    @apply rounded-xl px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand-600/25
+           bg-[linear-gradient(110deg,#7c3aed,#06b6d4,#f97316,#7c3aed)] bg-[length:220%_100%]
+           hover:-translate-y-0.5 hover:shadow-xl hover:shadow-cyan-500/20 disabled:opacity-50 transition-all duration-300
            focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2
            active:scale-95;
+    animation: gradientShift 7s ease infinite;
   }
 
   .input-field {
-    @apply w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm
+    @apply w-full rounded-xl border border-gray-200/80 bg-white/90 px-4 py-2.5 text-sm shadow-sm
            text-gray-900 placeholder-gray-400
-           focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent
+           focus:outline-none focus:ring-4 focus:ring-brand-500/15 focus:border-brand-400
            transition-all duration-200;
   }
 
   .card {
-    @apply bg-white rounded-2xl border border-gray-100;
-    box-shadow: 0 1px 3px 0 rgba(0,0,0,0.06), 0 1px 2px 0 rgba(0,0,0,0.04);
+    @apply bg-white/[0.82] rounded-2xl border border-white/75 backdrop-blur-xl;
+    box-shadow: 0 18px 45px rgba(15, 22, 48, 0.08), inset 0 1px 0 rgba(255,255,255,0.88);
   }
 
   .card-hover {
-    @apply bg-white rounded-2xl border border-gray-100 transition-shadow duration-200;
-    box-shadow: 0 1px 3px 0 rgba(0,0,0,0.06), 0 1px 2px 0 rgba(0,0,0,0.04);
+    @apply bg-white/[0.84] rounded-2xl border border-white/75 transition-all duration-300 backdrop-blur-xl;
+    box-shadow: 0 14px 34px rgba(15, 22, 48, 0.07), inset 0 1px 0 rgba(255,255,255,0.86);
   }
 
   .card-hover:hover {
-    box-shadow: 0 4px 12px 0 rgba(0,0,0,0.10), 0 2px 4px 0 rgba(0,0,0,0.06);
+    transform: translateY(-2px);
+    border-color: rgba(124,58,237,0.24);
+    box-shadow: 0 22px 48px rgba(15, 22, 48, 0.11), 0 8px 24px rgba(6,182,212,0.10);
   }
 
   .badge {
@@ -66,13 +81,13 @@
 
   .nav-link {
     @apply flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium
-           text-gray-500 hover:bg-brand-50 hover:text-brand-700
-           transition-all duration-150;
+           text-gray-500 hover:bg-white/75 hover:text-brand-700 hover:shadow-sm
+           transition-all duration-200;
   }
 
   .nav-link-active {
     @apply flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium
-           bg-brand-50 text-brand-700;
+           bg-white text-brand-700 shadow-sm ring-1 ring-brand-100;
   }
 
   .page-title {
@@ -87,6 +102,244 @@
   .section-title {
     @apply text-xs font-semibold text-gray-500 uppercase tracking-wide;
   }
+
+  .premium-shell {
+    background:
+      linear-gradient(rgba(255,255,255,0.52) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.52) 1px, transparent 1px),
+      radial-gradient(circle at 22% 12%, rgba(6, 182, 212, 0.12), transparent 30rem),
+      radial-gradient(circle at 80% 18%, rgba(236, 72, 153, 0.08), transparent 26rem),
+      linear-gradient(135deg, #f8fafc 0%, #eef6ff 46%, #fff8f3 100%);
+    background-size: 48px 48px, 48px 48px, auto, auto, auto;
+  }
+
+  .premium-sidebar {
+    @apply border-r border-white/70 bg-white/[0.72] backdrop-blur-2xl;
+    box-shadow: 14px 0 36px rgba(15, 22, 48, 0.06);
+  }
+
+  .auth-visual {
+    background:
+      linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px),
+      linear-gradient(135deg, #0f1630 0%, #1e2d5a 45%, #512e86 73%, #0f766e 100%);
+    background-size: 46px 46px, 46px 46px, auto;
+  }
+
+  .auth-card {
+    @apply rounded-2xl border border-white/75 bg-white/[0.85] p-6 shadow-2xl shadow-navy-900/10 backdrop-blur-xl sm:p-8;
+  }
+
+  .auth-page {
+    background:
+      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
+      radial-gradient(circle at 50% 0%, rgba(56,189,248,0.40), transparent 28rem),
+      linear-gradient(135deg, #06346d 0%, #0863b9 48%, #02447f 100%);
+    background-size: 58px 58px, 58px 58px, auto, auto;
+  }
+
+  .auth-stage {
+    position: relative;
+    border-radius: 18px;
+    background:
+      linear-gradient(135deg, rgba(4,47,96,0.82), rgba(2,82,157,0.62)),
+      radial-gradient(circle at 35% 22%, rgba(14,165,233,0.34), transparent 22rem);
+    box-shadow: 0 34px 90px rgba(1, 24, 54, 0.38), inset 0 1px 0 rgba(255,255,255,0.14);
+  }
+
+  .auth-stage::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1px solid rgba(255,255,255,0.13);
+    pointer-events: none;
+  }
+
+  .auth-panel {
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.24);
+    background:
+      linear-gradient(180deg, rgba(47,147,229,0.58), rgba(7,86,167,0.55)),
+      radial-gradient(circle at 50% 0%, rgba(255,255,255,0.22), transparent 15rem);
+    box-shadow: 0 30px 80px rgba(1, 24, 54, 0.38), inset 0 1px 0 rgba(255,255,255,0.28);
+    backdrop-filter: blur(22px);
+  }
+
+  .auth-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0.7rem;
+    z-index: -1;
+    border-radius: 14px;
+    background: rgba(1, 45, 95, 0.12);
+    filter: blur(18px);
+  }
+
+  .auth-input {
+    @apply w-full rounded-xl border border-white/[0.18] bg-blue-950/[0.22] px-3.5 py-3 text-sm font-semibold text-white shadow-inner shadow-blue-950/20
+           placeholder-sky-100/45 transition-all duration-200
+           focus:border-cyan-200/75 focus:bg-blue-950/30 focus:outline-none focus:ring-4 focus:ring-cyan-200/[0.18];
+  }
+
+  .auth-input:-webkit-autofill,
+  .auth-input:-webkit-autofill:hover,
+  .auth-input:-webkit-autofill:focus {
+    -webkit-text-fill-color: #ffffff;
+    box-shadow: 0 0 0 1000px rgba(8, 47, 96, 0.92) inset;
+    caret-color: #ffffff;
+  }
+
+  .auth-label {
+    @apply mb-1.5 block text-[11px] font-black uppercase tracking-wide text-sky-50/[0.92];
+  }
+
+  .auth-submit {
+    @apply w-full rounded-xl bg-[linear-gradient(135deg,#052f63,#075ca8_55%,#0891b2)] px-5 py-3 text-sm font-black text-white shadow-xl shadow-blue-950/30
+           transition-all duration-200 hover:-translate-y-0.5 hover:shadow-2xl hover:shadow-cyan-950/25
+           focus:outline-none focus:ring-4 focus:ring-cyan-200/25 active:scale-95 disabled:opacity-60;
+  }
+
+  .content-card {
+    position: absolute;
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 18px;
+    background: linear-gradient(145deg, rgba(255,255,255,0.18), rgba(255,255,255,0.07));
+    box-shadow: 0 26px 60px rgba(0, 28, 69, 0.24), inset 0 1px 0 rgba(255,255,255,0.18);
+    backdrop-filter: blur(12px);
+  }
+
+  .content-card-main {
+    left: 9%;
+    top: 22%;
+    width: 15rem;
+    padding: 1rem;
+    transform: rotate(-7deg);
+    animation: floatSlow 8s ease-in-out infinite;
+  }
+
+  .content-card-caption {
+    right: 10%;
+    top: 25%;
+    width: 15rem;
+    padding: 1rem;
+    transform: rotate(7deg);
+    animation: floatSlow 9s ease-in-out infinite reverse;
+  }
+
+  .content-card-reel {
+    right: 16%;
+    bottom: 17%;
+    width: 11rem;
+    padding: 0.75rem;
+    transform: rotate(-5deg);
+    animation: floatSoft 7s ease-in-out infinite;
+  }
+
+  .schedule-chip {
+    position: absolute;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.13);
+    padding: 0.55rem 0.8rem;
+    color: rgba(224,242,254,0.94);
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    box-shadow: 0 18px 45px rgba(0, 28, 69, 0.22);
+    backdrop-filter: blur(10px);
+  }
+
+  .schedule-chip-top {
+    left: 19%;
+    bottom: 18%;
+    animation: floatSoft 6.5s ease-in-out infinite;
+  }
+
+  .schedule-chip-bottom {
+    right: 11%;
+    top: 61%;
+    animation: floatSoft 7.5s ease-in-out infinite reverse;
+  }
+
+  .auth-ribbon,
+  .auth-wave {
+    position: absolute;
+    opacity: 0.52;
+    filter: drop-shadow(0 18px 18px rgba(0, 22, 51, 0.22));
+  }
+
+  .auth-ribbon {
+    height: 3.2rem;
+    width: 9rem;
+    border-radius: 999px;
+    background: linear-gradient(135deg, rgba(186,230,253,0.88), rgba(14,165,233,0.26));
+  }
+
+  .auth-ribbon-left {
+    left: 14%;
+    top: 39%;
+    transform: rotate(-42deg);
+  }
+
+  .auth-ribbon-right {
+    right: 4%;
+    bottom: 10%;
+    width: 13rem;
+    transform: rotate(8deg);
+  }
+
+  .auth-wave {
+    width: 8rem;
+    height: 4rem;
+    border: 1.1rem solid rgba(125,211,252,0.72);
+    border-left-color: transparent;
+    border-bottom-color: transparent;
+    border-radius: 999px;
+  }
+
+  .auth-wave-one {
+    left: 24%;
+    bottom: 17%;
+    transform: rotate(137deg);
+    animation: floatSlow 9s ease-in-out infinite;
+  }
+
+  .auth-wave-two {
+    right: 25%;
+    top: 18%;
+    transform: rotate(24deg);
+    animation: floatSoft 7.2s ease-in-out infinite;
+  }
+
+  .auth-wave-three {
+    left: 31%;
+    top: -4%;
+    width: 4.6rem;
+    height: 4.6rem;
+    transform: rotate(-20deg);
+    animation: floatSoft 6.2s ease-in-out infinite reverse;
+  }
+
+  .shine-border {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .shine-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(124,58,237,0.50), rgba(6,182,212,0.38), rgba(249,115,22,0.35));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
 }
 
 @layer utilities {
@@ -99,5 +352,65 @@
 
   .bg-advora-hero {
     background: linear-gradient(135deg, #0f1630 0%, #1e2d5a 60%, #2d1b69 100%);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-120%); }
+  55%, 100% { transform: translateX(120%); }
+}
+
+@keyframes floatSlow {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -14px; }
+}
+
+@keyframes floatSoft {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 10px; }
+}
+
+@media (max-width: 1023px) {
+  .content-card-main,
+  .content-card-caption,
+  .content-card-reel,
+  .schedule-chip,
+  .auth-ribbon,
+  .auth-wave {
+    opacity: 0.24;
+  }
+
+  .content-card-main {
+    left: -2rem;
+    top: 18%;
+  }
+
+  .content-card-caption {
+    right: -3.5rem;
+    top: 20%;
+  }
+
+  .content-card-reel {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .auth-stage {
+    min-height: calc(100vh - 2rem);
+  }
+
+  .content-card,
+  .schedule-chip {
+    display: none;
   }
 }

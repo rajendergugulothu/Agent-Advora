@@ -19,16 +19,16 @@ export default async function DashboardLayout({ children }: { children: React.Re
   if (!user) redirect("/login");
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="premium-shell min-h-screen flex text-gray-900">
       <DashboardNav userEmail={user.email ?? ""} />
 
-      {/* Main content */}
       <main className="flex-1 min-w-0 flex flex-col">
-        {/* Mobile top bar spacer */}
         <div className="lg:hidden h-14 shrink-0" />
 
         <div className="flex-1 p-5 sm:p-6 lg:p-8 pb-24 lg:pb-8">
+          <div className="mx-auto w-full max-w-7xl">
           {children}
+          </div>
         </div>
       </main>
     </div>

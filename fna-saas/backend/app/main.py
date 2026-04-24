@@ -51,11 +51,15 @@ limiter = Limiter(
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     log.info("startup_begin", environment=settings.environment)
-    await get_scheduler().start()
-    log.info("scheduler_started")
+    if settings.should_start_scheduler:
+        await get_scheduler().start()
+        log.info("scheduler_started")
+    else:
+        log.info("scheduler_skipped", host="vercel_or_disabled")
     yield
-    await get_scheduler().shutdown()
-    log.info("scheduler_stopped")
+    if settings.should_start_scheduler:
+        await get_scheduler().shutdown()
+        log.info("scheduler_stopped")
 
 
 # ── App ───────────────────────────────────────────────────────────────────────

@@ -4,6 +4,7 @@ All values are loaded from environment variables.
 Fails fast at startup if any required value is missing.
 """
 
+import os
 from functools import lru_cache
 from typing import Literal
 
@@ -69,6 +70,7 @@ class Settings(BaseSettings):
 
     # ── Rate limiting ─────────────────────────────────────────
     rate_limit_per_minute: int = 60
+    enable_scheduler: bool = True
 
     @field_validator("environment")
     @classmethod
@@ -81,6 +83,10 @@ class Settings(BaseSettings):
     @property
     def is_production(self) -> bool:
         return self.environment == "production"
+
+    @property
+    def should_start_scheduler(self) -> bool:
+        return self.enable_scheduler and os.getenv("VERCEL") != "1"
 
 
 @lru_cache
