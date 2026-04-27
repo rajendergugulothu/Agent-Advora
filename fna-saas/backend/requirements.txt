@@ -40,3 +40,6 @@ slowapi==0.1.9
 # Utilities
 orjson==3.10.12
 python-multipart==0.0.20
+
+# Vercel ASGI→WSGI adapter
+a2wsgi==1.10.4
