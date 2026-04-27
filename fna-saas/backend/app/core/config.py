@@ -5,6 +5,7 @@ Fails fast at startup if any required value is missing.
 """
 
 import os
+import json
 from functools import lru_cache
 from typing import Literal
 
@@ -26,7 +27,7 @@ class Settings(BaseSettings):
 
     # ── API ───────────────────────────────────────────────────
     api_v1_prefix: str = "/api/v1"
-    allowed_origins: list[str] = Field(default=["http://localhost:3000"])
+    allowed_origins: str | list[str] = Field(default=["http://localhost:3000"])
 
     # ── Supabase ──────────────────────────────────────────────
     supabase_url: str
@@ -89,6 +90,17 @@ class Settings(BaseSettings):
                 return False
             if value in {"development", "dev"}:
                 return True
+        return v
+
+    @field_validator("allowed_origins")
+    @classmethod
+    def parse_allowed_origins(cls, v: str | list[str]) -> list[str]:
+        if isinstance(v, str):
+            value = v.strip()
+            if value.startswith("[") and value.endswith("]"):
+                parsed = json.loads(value)
+                return [str(origin).strip() for origin in parsed if str(origin).strip()]
+            return [origin.strip() for origin in value.split(",") if origin.strip()]
         return v
 
     @property
