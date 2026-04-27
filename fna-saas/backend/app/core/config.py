@@ -80,6 +80,17 @@ class Settings(BaseSettings):
             raise ValueError(f"environment must be one of {allowed}")
         return v
 
+    @field_validator("debug", mode="before")
+    @classmethod
+    def parse_debug(cls, v: object) -> object:
+        if isinstance(v, str):
+            value = v.strip().lower()
+            if value in {"release", "production", "prod", "staging"}:
+                return False
+            if value in {"development", "dev"}:
+                return True
+        return v
+
     @property
     def is_production(self) -> bool:
         return self.environment == "production"
