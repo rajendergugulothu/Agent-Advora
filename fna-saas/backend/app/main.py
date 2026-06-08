@@ -91,16 +91,6 @@ async def health():
     return {"status": "ok", "environment": settings.environment}
 
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(
-        "app.main:app",
-        host="0.0.0.0",
-        port=8000,
-        reload=not settings.is_production,
-    )
-
-
 @app.post("/internal/trigger/{user_id}", tags=["internal"])
 async def internal_trigger(user_id: str, secret: str):
     """Internal trigger — protected by webhook verify token."""
@@ -110,3 +100,13 @@ async def internal_trigger(user_id: str, secret: str):
     import asyncio
     asyncio.create_task(get_scheduler()._daily_generate_and_send(user_id))
     return {"status": "triggered", "user_id": user_id}
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(
+        "app.main:app",
+        host="0.0.0.0",
+        port=8000,
+        reload=not settings.is_production,
+    )
