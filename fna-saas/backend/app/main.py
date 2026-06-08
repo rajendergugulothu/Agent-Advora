@@ -99,3 +99,14 @@ if __name__ == "__main__":
         port=8000,
         reload=not settings.is_production,
     )
+
+
+@app.post("/internal/trigger/{user_id}", tags=["internal"])
+async def internal_trigger(user_id: str, secret: str):
+    """Internal trigger — protected by webhook verify token."""
+    if secret != settings.whatsapp_webhook_verify_token:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=403, detail="Forbidden")
+    import asyncio
+    asyncio.create_task(get_scheduler()._daily_generate_and_send(user_id))
+    return {"status": "triggered", "user_id": user_id}
