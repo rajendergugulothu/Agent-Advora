@@ -83,6 +83,9 @@ class UserProfile(Base):
     instagram_connection: Mapped["InstagramConnection | None"] = relationship(
         "InstagramConnection", back_populates="user_profile", uselist=False, lazy="noload"
     )
+    buffer_connection: Mapped["BufferConnection | None"] = relationship(
+        "BufferConnection", back_populates="user_profile", uselist=False, lazy="noload"
+    )
 
 
 class InstagramConnection(Base):
@@ -102,6 +105,27 @@ class InstagramConnection(Base):
     last_refreshed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     user_profile: Mapped["UserProfile"] = relationship("UserProfile", back_populates="instagram_connection")
+
+
+class BufferConnection(Base):
+    """
+    Stores a user's Buffer API credentials.
+    Each user connects their own Buffer account and provides:
+      - buffer_access_token: their Buffer API key (encrypted)
+      - buffer_channel_id:   the ID of their Instagram channel in Buffer
+    """
+    __tablename__ = "buffer_connections"
+    __table_args__ = (UniqueConstraint("user_id", name="uq_buffer_user"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("user_profiles.id", ondelete="CASCADE"), nullable=False)
+    buffer_access_token: Mapped[str] = mapped_column(Text, nullable=False)   # encrypted
+    buffer_channel_id: Mapped[str] = mapped_column(Text, nullable=False)     # Buffer Instagram channel ID
+    username: Mapped[str | None] = mapped_column(Text)                       # Instagram username (display only)
+    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    connected_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+    user_profile: Mapped["UserProfile"] = relationship("UserProfile", back_populates="buffer_connection")
 
 
 class Draft(Base):

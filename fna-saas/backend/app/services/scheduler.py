@@ -26,6 +26,7 @@ from app.db.database import AsyncSessionFactory
 from app.db.models import (
     AnalyticsJob,
     AnalyticsStage,
+    BufferConnection,
     Draft,
     DraftStatus,
     InstagramConnection,
@@ -35,6 +36,7 @@ from app.db.models import (
     UserProfile,
 )
 from app.services import content, image, whatsapp
+from app.services.buffer import post_single_image, post_carousel
 from app.services.instagram import (
     fetch_post_insights,
     refresh_long_lived_token,
@@ -200,17 +202,19 @@ class SchedulerService:
                 return
 
             user = await db.get(UserProfile, uuid.UUID(user_id))
-            ig_result = await db.execute(
-                select(InstagramConnection).where(
-                    InstagramConnection.user_id == uuid.UUID(user_id),
-                    InstagramConnection.is_active == True,
+
+            # ── Load Buffer connection ──────────────────────────────────────
+            buf_result = await db.execute(
+                select(BufferConnection).where(
+                    BufferConnection.user_id == uuid.UUID(user_id),
+                    BufferConnection.is_active == True,
                 )
             )
-            ig = ig_result.scalar_one_or_none()
+            buf = buf_result.scalar_one_or_none()
 
-            if not ig or not ig.is_active:
+            if not buf:
                 await whatsapp.send_text_message(
-                    "Instagram is not connected. Please connect your account in the dashboard.",
+                    "Buffer is not connected. Please add your Buffer API token and Channel ID in the dashboard.",
                     user.whatsapp_number,
                 )
                 return
@@ -235,13 +239,13 @@ class SchedulerService:
             "carousel_slides": draft.carousel_slides,
         }
 
-        account_id = decrypt_token(ig.instagram_account_id)
-        access_token = decrypt_token(ig.instagram_access_token)
+        channel_id = buf.buffer_channel_id
+        access_token = decrypt_token(buf.buffer_access_token)
 
         result = await self._build_and_publish(
             draft_id=draft_id,
             post=post,
-            account_id=account_id,
+            channel_id=channel_id,
             access_token=access_token,
         )
 
@@ -265,18 +269,11 @@ class SchedulerService:
                     .values(status=DraftStatus.posted)
                 )
 
-            await self._schedule_analytics_jobs(
-                post_result_id=post_result_id,
-                user_id=user_id,
-                draft_id=draft_id,
-                instagram_post_id=result["post_id"],
+            await whatsapp.send_text_message(
+                "✅ Post queued in Buffer — it will publish to Instagram on schedule!",
+                user.whatsapp_number,
             )
-
-            msg = "Posted to Instagram successfully!"
-            if result.get("instagram_url"):
-                msg += f"\n{result['instagram_url']}"
-            await whatsapp.send_text_message(msg, user.whatsapp_number)
-            log.info("post_approved_and_published", draft_id=draft_id, post_id=result["post_id"])
+            log.info("post_approved_and_queued_buffer", draft_id=draft_id, post_id=result["post_id"])
 
         else:
             async with AsyncSessionFactory() as db:
@@ -314,11 +311,9 @@ class SchedulerService:
         self,
         draft_id: str,
         post: dict,
-        account_id: str,
+        channel_id: str,
         access_token: str,
     ) -> dict:
-        from app.services.instagram import post_single_image, post_carousel
-
         if post["post_type"] == "carousel":
             slides = post.get("carousel_slides") or []
             image_urls = await image.generate_carousel_images(
@@ -331,7 +326,7 @@ class SchedulerService:
                 image_urls=image_urls,
                 caption=post["caption"],
                 hashtags=post["hashtags"],
-                account_id=account_id,
+                channel_id=channel_id,
                 access_token=access_token,
             )
             result["image_urls"] = image_urls
@@ -349,7 +344,7 @@ class SchedulerService:
             image_url=image_url,
             caption=post["caption"],
             hashtags=post["hashtags"],
-            account_id=account_id,
+            channel_id=channel_id,
             access_token=access_token,
         )
         result["image_url"] = image_url
